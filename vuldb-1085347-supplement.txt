@@ -1,0 +1,9 @@
+Supplement to ticket 1085347 (missing authorization on /main/ action endpoints): after filing, source verification refined the auth.php description and one line reference. The corrections are published in the linked repository (file A2-pos-pharmacy-missing-auth.md, now reflecting the verified state).
+
+1. The auth.php description: the only auth.php in the product is main/auth.php, and it checks $_SESSION['SESS_MEMBER_ID'] (not $_SESSION['username'] at "product root" as the description said). It is included by the display pages under /main/; the action handlers omit it.
+
+2. Line reference: main/savesales.php inserts the cash and due POST parameters unescaped - due at lines 14-15, cash at lines 26-27 (the description said 26-27 for both).
+
+The vulnerability, proof, classification (CWE-862, 9.8) and dedup are unchanged. Note: CVE-2025-9921's PR:L scoring assumption (that /main/ pages require admin access) remains contradicted by this finding.
+
+Jasper He (jasperjjh)

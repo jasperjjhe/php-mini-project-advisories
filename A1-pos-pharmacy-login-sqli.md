@@ -7,16 +7,11 @@
 
 ## Summary
 
-The login flow of POS Pharmacy System 1.0 concatenates the POST parameters
-`username` and `password` into the SQL query without escaping or
-parameterization. An unauthenticated attacker can authenticate as any user,
-including the administrator, with a trivially crafted username.
+The login flow of POS Pharmacy System 1.0 concatenates the POST parameters `username` and `password` into the SQL query without escaping or parameterization. An unauthenticated attacker can authenticate as any user, including the administrator, with a trivially crafted username.
 
 ## Details
 
-`index.php` posts the login form to `login.php`. There, the `clean()` helper
-(lines 51-52) only applies legacy magic-quotes-style slash stripping, which
-does not neutralize single quotes:
+`index.php` posts the login form to `login.php`. There, the `clean()` helper (defined at line 25, applied at lines 34-35) only applies legacy magic-quotes-style slash stripping, which does not neutralize single quotes:
 
 ```php
 $login = clean($_POST['username']);
@@ -24,9 +19,7 @@ $password = clean($_POST['password']);
 $qry = "SELECT * FROM user WHERE username='$login' AND password='$password'";
 ```
 
-The query is executed at login.php line 56 and the raw SQL is echoed back to
-the client on failed logins (`print $qry`, line 78), which confirms the
-injection context to an attacker.
+The query is built at login.php line 56 and executed at line 57; the raw SQL is echoed back to the client on failed logins (lines 77-79: `print $qry` followed by "Query failed"), which confirms the injection context to an attacker.
 
 ## Proof
 
@@ -37,8 +30,7 @@ POST /login.php
 username=admin' -- &password=x
 ```
 
-Error-based confirmation: submitting `username=admin'` returns a MySQL syntax
-error rendered in the page.
+Confirmation on failed logins: the raw SQL query is echoed back to the client followed by "Query failed" (lines 77-79), showing the injection context directly.
 
 ## Classification
 
@@ -48,12 +40,8 @@ error rendered in the page.
 
 ## Deduplication
 
-Checked 2026-11-09 against NVD (keyword search) and VulDB (API search). The
-only published entry for this product is CVE-2025-9921 (stored XSS in
-/main/products.php), which does not cover login.php. No prior SQL injection
-record exists for this product.
+Checked 2026-11-09 against NVD (keyword search) and VulDB (API search). The only published entry for this product is CVE-2025-9921 (stored XSS in /main/products.php), which does not cover login.php. No prior SQL injection record exists for this product.
 
 ## Suggested fix
 
-Use prepared statements (`mysqli` with bound parameters) for the credential
-query, remove the `print $qry` debug output, and drop the `clean()` helper.
+Use prepared statements (`mysqli` with bound parameters) for the credential query, remove the `print $qry` debug output, and drop the `clean()` helper.

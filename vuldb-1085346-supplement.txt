@@ -1,0 +1,13 @@
+Supplement to ticket 1085346 (missing authentication on admin action endpoints): after filing, continued source verification refined two details in the submitted PoC and one in the impact description. The corrections are published in the linked repository (which now reflects the verified state); this note summarizes what changed.
+
+1. Proof correction - the SQLi demonstration endpoint. The submitted PoC shows a POST to /admin/add_query_room.php and states "The INSERT fails with a MySQL error surfaced by die(mysqli_error()), confirming injection." Source verification shows the INSERT never runs on that endpoint: add_query_room.php includes nothing at all (it uses $conn from a connect.php it never loads), so a direct POST lands the uploaded file in /photo/ (line 8, before the query) and then fatals on the undefined $conn at line 9. The upload proof stands; the injection proof moves to admin/edit_query_room.php, which includes connect.php itself, has no session check, and surfaces the MySQL error through die(mysqli_error()) on a direct POST. Both endpoints remain unauthenticated; together they demonstrate upload plus injection behind the same missing-authorization root cause, and the 9.8 anchor is unchanged.
+
+2. Additional unguarded endpoints verified. Beyond the endpoints listed in the ticket, admin/delete_room.php (mysql_query DELETE keyed on $_REQUEST[room_id]; includes only connect.php at line 2) and admin/edit_query_account.php (admin-table UPDATE from $_POST keyed on $_REQUEST[admin_id]) are also reachable without a session.
+
+3. Impact note - the restore branch's autosave does not fully limit the damage. The restore branch calls autosaveBD() before loadBackupDB(), so a single forced restore leaves a recovery point. However, the same missing-authorization pattern exposes web/html/configuracao/backup.php (action=bd, GET, no token), which generates a fresh backup named with the current timestamp on demand. An attacker can therefore force backup creation at a known timestamp-name, force a restore to it, and then remove the restore's own autosave - eliminating the recovery point. This chain is what grounds the I:H/A:H in the CVSS vector.
+
+4. Severity. The vector CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:H/A:H computes 7.6 under CVSS 3.1 round-up. If VulDB records 7.5 for this entry, that is an ordinary-rounding difference, not a dispute.
+
+The linked repository (github.com/jasperjjhe/php-mini-project-advisories, file B1-hotel-reservation-missing-auth.md) contains the corrected proof, the two additional endpoints, and this chain. Happy to answer questions or test a fix.
+
+Jasper He (jasperjjh)

@@ -1,0 +1,9 @@
+Supplement to ticket 1086441 (SQL injection in login.php): after filing, source verification refined two line references. The corrections are published in the linked repository (file A1-pos-pharmacy-login-sqli.md, now reflecting the verified state).
+
+1. The clean() helper is defined at line 25 and applied at lines 34-35 (the original report's "lines 51-52" pointed at the header()/exit() lines instead).
+
+2. The failed-login response echoes the raw SQL query followed by "Query failed" (lines 77-79), not a rendered syntax error - the echo is what confirms the injection context to an attacker.
+
+The vulnerability, proof (authentication bypass as administrator with username=admin' --), classification (CWE-89, 9.8) and dedup are unchanged.
+
+Jasper He (jasperjjh)
