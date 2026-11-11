@@ -3,7 +3,13 @@
 - Product page: https://www.campcodes.com/projects/php/online-hotel-reservation-system/ (PHP/MySQL mini-project, distributed as a free download)
 - Reported: 2026-11-10, to the vendor via the site contact channel
 - Researcher: Jasper He (jasperjjhe)
+- VulDB ticket: 1085346 (filed 2026-11-10 from an earlier draft of this advisory; see Revision history below - this page is the corrected, authoritative version)
 - Status: unpublished, awaiting vendor response; will be updated with any fix
+
+## Revision history
+
+- 2026-11-10: initial version (matches the VulDB submission).
+- 2026-11-11: corrections after full source re-verification. (1) Proof split: add_query_room.php demonstrates the unauthenticated upload (the INSERT there never runs - the handler includes nothing and $conn is undefined); the SQLi demonstration moved to edit_query_room.php (includes connect.php itself, no session check). The ticket's PoC text predates this correction and still describes the INSERT on add_query_room.php. (2) confirm_reserve.php removed from the affected list (it does include validate.php). (3) The filename claim corrected: $photo and $photo_name pass through addslashes() before insertion - room_type and price remain the raw injectables. (4) Two additional unguarded endpoints added: admin/delete_room.php, admin/edit_query_account.php. (5) A supplement was sent to VulDB (vuldb-1085346-supplement.txt in this repository) covering the same corrections for the moderation team.
 
 ## Summary
 

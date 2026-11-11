@@ -4,6 +4,12 @@
 - Reported: 2026-11-10, to the vendor via the site contact channel
 - Researcher: Jasper He (jasperjjhe)
 - Status: unpublished, awaiting vendor response; will be updated with any fix
+- VulDB ticket: 1086441 (filed 2026-11-10; see Revision history below - this page is the corrected, authoritative version)
+
+## Revision history
+
+- 2026-11-10: initial version (matches the VulDB submission).
+- 2026-11-11: corrections after full source re-verification - line references and response-shape description corrected (see the changes in this file; a supplement was sent to VulDB covering them: vuldb-1086441-supplement.txt).
 
 ## Summary
 
