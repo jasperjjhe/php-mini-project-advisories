@@ -48,12 +48,15 @@ POST /admin/edit_query_room.php
   edit_room=1&room_id=1&room_type=x'&price=1
 ```
 
+The same missing-authorization pattern also exposes the backup module: web/html/configuracao/backup.php (action=bd, GET, no token) generates a fresh backup named with the current timestamp on demand, and the restore branch of gerenciar_backup.php calls autosaveBD() before loadBackupDB(). An attacker can therefore force backup creation at a known timestamp-name, force a restore to it, and then remove the restore's own autosave - eliminating the recovery point the restore generated.
+
 Together the two endpoints demonstrate unauthenticated upload plus unauthenticated injection behind the same missing-authorization root cause.
 
 ## Classification
 
 - CWE-862 (Missing Authorization) on all endpoints listed; add_query_room.php also CWE-434 (Unrestricted File Upload); edit_query_room.php also CWE-89 (SQL Injection)
 - CVSS v3.1 (anchor: unauthenticated upload + injection): AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H (9.8 Critical)
+- Severity display note: the vector computes 7.6 under CVSS 3.1 round-up; if a database records 7.5 for this entry, that is an ordinary-rounding difference, not a dispute.
 - Affected files/parameters: admin/add_query_room.php (photo, room_type, price), admin/edit_query_room.php, admin/delete_account.php (admin_id), admin/delete_pending.php (transaction_id), admin/checkout_query.php, admin/save_form.php, admin/delete_room.php (room_id), admin/edit_query_account.php (admin_id)
 
 ## Deduplication
