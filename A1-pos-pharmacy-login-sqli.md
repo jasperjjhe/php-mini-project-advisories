@@ -9,7 +9,7 @@
 ## Revision history
 
 - 2026-11-10: initial version (matches the VulDB submission).
-- 2026-11-11: corrections after full source re-verification - line references and response-shape description corrected (see the changes in this file; a supplement was sent to VulDB covering them: vuldb-1086441-supplement.txt).
+- 2026-11-11: corrections after full source re-verification - line references and response-shape description corrected (see the changes in this file; a supplement for the VulDB moderation team is prepared in this repository: vuldb-1086441-supplement.txt.txt).
 
 ## Summary
 

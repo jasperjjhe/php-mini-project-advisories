@@ -10,9 +10,9 @@ Public security advisories for freely distributed PHP mini-projects, published a
 
 Vendors were contacted on 2026-11-10. Entries were checked against NVD and the VulDB database prior to publication; dedup status is stated per file.
 
-## VulDB submission supplements
+## VulDB moderation supplements (prepared, not yet sent)
 
-These files correct or extend claims in the VulDB submissions (tickets 1086441, 1085347, 1085346). Read them alongside the corresponding advisory:
+These files correct or extend claims in the VulDB submissions (tickets 1086441, 1085347, 1085346); they are prepared for the moderation team and will be supplied when a ticket is queried. Read them alongside the corresponding advisory:
 
 | Supplement | For ticket | Contents |
 |---|---|---|
